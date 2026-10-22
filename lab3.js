@@ -1,0 +1,117 @@
+// ITT588 Lab Work 3 - SafeHaven Malaysia (JavaScript)
+"use strict";
+
+// escape user text before putting it in innerHTML (prevents HTML injection)
+function esc(s){
+  return s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* ===== 1. DATE & TIME + EVENT LOOP (setInterval) ===== */
+function updateClock(){
+  const now = new Date();                       // Date object
+  const hour = now.getHours();
+  let greeting;
+  if (hour < 12) greeting = "Good morning";     // control statement: if / else
+  else if (hour < 18) greeting = "Good afternoon";
+  else greeting = "Good evening";
+  const date = now.toLocaleDateString("en-MY", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
+  const time = now.toLocaleTimeString("en-MY");
+  // OUTPUT METHOD 1: innerHTML
+  document.getElementById("clock").innerHTML = `${greeting}. <b>${date}</b>, ${time}`;
+}
+updateClock();
+setInterval(updateClock, 1000);                 // runs every 1 second via the event loop
+
+/* ===== 2. POP-UP DIALOG ===== */
+const dlg = document.getElementById("dlg");
+function showDialog(title, html){
+  document.getElementById("dtitle").textContent = title;
+  document.getElementById("dbody").innerHTML = html;
+  dlg.showModal();                              // opens the <dialog> as a pop-up
+}
+document.getElementById("dclose").addEventListener("click", () => dlg.close());
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); }); // click outside to close
+
+/* ===== 3. SAFETY CHECK FORM ===== */
+document.getElementById("check").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  // --- Event loop demo: watch the order in the console ---
+  console.log("1. synchronous code runs first");
+  Promise.resolve().then(() => console.log("3. microtask (Promise)"));
+  setTimeout(() => console.log("4. macrotask (setTimeout)"), 0);
+  console.log("2. still synchronous");
+
+  // --- read form values ---
+  const name = document.getElementById("cname").value.trim() || "Friend";
+  const boxes = document.querySelectorAll('#check input[name="q"]');
+  let score = 0;                                // operators: =, +=, ++
+  let count = 0;
+  const ticked = [];
+
+  for (const box of boxes){                     // control statement: for...of loop
+    if (box.checked){
+      score += Number(box.value);               // arithmetic operator
+      count++;
+      ticked.push(box.parentElement.textContent.trim());
+    }
+  }
+
+  // --- decide result: switch + logical/comparison operators ---
+  let level, advice;
+  switch (true){
+    case score === 0:
+      level = "No warning signs selected";
+      advice = "Good to hear. Keep the hotline numbers saved, just in case.";
+      break;
+    case score <= 3:
+      level = "Some warning signs";
+      advice = "These can be early signs of abuse. Consider talking to someone you trust or calling Talian Kasih.";
+      break;
+    case score <= 6:
+      level = "Moderate concern";
+      advice = "Your situation may be unsafe. Please contact Talian Kasih (15999) or WAO (03-3000 8858) for advice.";
+      break;
+    default:
+      level = "High concern";
+      advice = "Your safety may be at risk. Please call Talian Kasih 15999 now, or 999 if you are in danger.";
+  }
+  const urgent = score >= 5 && count >= 3;      // logical operator &&
+  const stamp = new Date().toLocaleString("en-MY");
+
+  // OUTPUT METHOD 1: innerHTML
+  document.getElementById("result").innerHTML =
+    `<h3>Result for ${esc(name)}</h3>
+     <p><b>${level}</b> (score ${score}, ${count} sign${count === 1 ? "" : "s"} selected)</p>
+     <p>${advice}</p><p class="note">Checked on ${stamp}</p>`;
+
+  // OUTPUT METHOD 2: console
+  console.log("Safety check result:", {name, score, count, level, urgent, stamp});
+  console.table(ticked.map((t, i) => ({no: i + 1, sign: t})));
+
+  // OUTPUT METHOD 3: document.write()  (written into the summary iframe, so the main page is not erased)
+  const d = document.getElementById("report").contentDocument;
+  d.open();
+  d.write(`<body style="font-family:Arial;padding:12px;color:#1d2b36">
+    <h3>SafeHaven summary</h3>
+    <p>Name: ${esc(name)}<br>Date: ${stamp}<br>Level: <b>${level}</b></p>
+    <ul>${ticked.map(t => `<li>${esc(t)}</li>`).join("") || "<li>None selected</li>"}</ul></body>`);
+  d.close();
+
+  // OUTPUT METHOD 4: window.alert()  + pop-up dialog, delayed with setTimeout (event loop)
+  setTimeout(() => {
+    window.alert(`Hi ${name}, your result is ready: ${level}.`);
+    showDialog(level, `<p>${advice}</p>` +
+      (urgent ? `<p><b>Emergency: 999</b><br><b>Talian Kasih: 15999</b> (24 hours)</p>` : ""));
+  }, 300);
+});
+
+/* ===== 4. CONTACT FORM: validation + pop-up ===== */
+document.getElementById("f").addEventListener("submit", function(e){
+  e.preventDefault();
+  const msg = document.getElementById("m").value;
+  const words = msg.trim().split(/\s+/).length;
+  console.log(`Contact message received (${words} words)`);
+  showDialog("Message received", "<p>Thank you! This is a demo form, so nothing is sent or stored.</p>");
+  this.reset();
+});
