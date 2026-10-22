@@ -1,117 +1,246 @@
-// ITT588 Lab Work 3 - SafeHaven Malaysia (JavaScript)
-"use strict";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SafeHaven Malaysia – Help for Domestic &amp; Gender-Based Violence</title>
+<style>
+:root{--bg:#f4f7fa;--card:#fff;--text:#1d2b36;--muted:#5a6b78;--navy:#12395b;--teal:#12868a;--tealbg:#e3f3f3;--border:#dce4ea;--bar:#12395b;--hero:#e9f1f7}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1a24;--card:#16252f;--text:#e8eff4;--muted:#9fb1bd;--navy:#8ec3ee;--teal:#4fc4c8;--tealbg:#17343a;--border:#2a3d4a;--bar:#0a2236;--hero:#13222d}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:100px}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+a{color:var(--teal)}
+.wrap{max-width:1080px;margin:auto;padding:0 1.1rem}
+.top{background:var(--bar);color:#fff;font-size:.88rem;padding:.4rem 0}
+.top .wrap{display:flex;flex-wrap:wrap;gap:.2rem 1.4rem;justify-content:space-between}
+.top b{color:#7fe0e3}
+header.nav{background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+header.nav .wrap{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1.4rem;padding-top:.7rem;padding-bottom:.7rem}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;margin-right:auto;color:var(--navy)}
+.logo svg{width:40px;height:40px;flex:none}
+.logo strong{font-size:1.2rem;line-height:1.1;display:block}
+.logo small{font-size:.72rem;color:var(--muted);font-weight:500;letter-spacing:.03em}
+.menu{display:flex;flex-wrap:wrap;gap:.2rem 1.2rem}
+.menu a{text-decoration:none;color:var(--text);font-weight:600;font-size:.93rem;padding:.2rem 0;border-bottom:2px solid transparent}
+.menu a:hover{border-color:var(--teal);color:var(--teal)}
+.btn{display:inline-block;background:var(--teal);color:#fff;padding:.7rem 1.3rem;border-radius:6px;text-decoration:none;font-weight:600;border:0;cursor:pointer;font-size:1rem}
+.btn.out{background:transparent;color:var(--navy);border:2px solid var(--navy)}
+.hero{background:var(--hero);padding:3rem 0}
+.hero .wrap{display:grid;gap:2rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:center}
+.hero h1{font-size:clamp(1.8rem,4.5vw,2.7rem);line-height:1.2;color:var(--navy);margin:0 0 .8rem}
+.hero p{color:var(--muted);margin:0 0 1.3rem;max-width:52ch}
+.help{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.3rem;box-shadow:0 4px 18px rgba(18,57,91,.08)}
+.help h2{margin:0 0 .8rem;font-size:1.05rem;color:var(--navy)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.7rem 0;border-top:1px solid var(--border)}
+.row span{font-size:.92rem;color:var(--muted)}
+.row b{font-size:1.35rem;color:var(--teal);white-space:nowrap}
+.trust{background:var(--card);border-bottom:1px solid var(--border)}
+.trust .wrap{display:flex;flex-wrap:wrap;gap:.4rem 2rem;justify-content:center;padding-top:.9rem;padding-bottom:.9rem;font-weight:600;font-size:.92rem;color:var(--navy)}
+section{padding:3rem 0}
+section.alt{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+h2.t{font-size:1.65rem;color:var(--navy);margin:0 0 .3rem}
+h2.t::after{content:"";display:block;width:48px;height:4px;background:var(--teal);border-radius:2px;margin-top:.4rem}
+.lead{color:var(--muted);max-width:70ch;margin:.8rem 0 1.6rem}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem;border-top:3px solid var(--teal)}
+section.alt .card{background:var(--bg)}
+.card h3{margin:0 0 .4rem;font-size:1.02rem;color:var(--navy)}
+.card p,.card li{margin:.25rem 0;font-size:.94rem}
+.card ul{padding-left:1.1rem;margin:.3rem 0}
+.scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:540px;background:var(--card)}
+th,td{padding:.7rem .9rem;text-align:left;font-size:.93rem;vertical-align:top;border-bottom:1px solid var(--border)}
+th{background:var(--tealbg);color:var(--navy)}
+tr:last-child td{border-bottom:0}
+.steps{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.steps li{counter-increment:s;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem .8rem 3.1rem;position:relative;font-size:.94rem}
+.steps li::before{content:counter(s);position:absolute;left:.85rem;top:.75rem;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--navy);color:var(--card);text-align:center;font-weight:700;line-height:1.7rem}
+.big{font-size:1.8rem;font-weight:800;color:var(--teal);margin:.1rem 0;word-break:break-word}
+.tag{display:inline-block;background:var(--tealbg);color:var(--teal);border-radius:4px;padding:.05rem .5rem;font-size:.75rem;font-weight:700;text-transform:uppercase}
+.emerg{background:var(--navy);color:var(--card);border-radius:10px;padding:1.1rem 1.4rem;margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:center;justify-content:space-between}
+.emerg .big{color:inherit;margin:0}
+.note{font-size:.85rem;color:var(--muted);margin-top:1rem}
+form{display:grid;gap:.8rem}
+label{font-size:.88rem;font-weight:600}
+input,textarea{width:100%;padding:.65rem;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text);font:inherit}
+.checks label{display:block;font-weight:400;padding:.35rem 0}
+.checks input{width:auto;margin-right:.5rem}
+#result{margin-top:1rem}
+#report{width:100%;height:200px;border:1px solid var(--border);border-radius:10px;background:#fff;margin-top:1rem}
+dialog{border:0;border-radius:12px;padding:1.4rem;max-width:min(92vw,440px);background:var(--card);color:var(--text);box-shadow:0 10px 40px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(10,30,50,.6)}
+dialog h3{margin:0 0 .6rem;color:var(--navy)}
+footer{background:var(--bar);color:#c9d6e0;padding:2rem 0;font-size:.88rem}
+footer b{color:#fff}
+.leave{position:fixed;right:1rem;bottom:1rem;background:#fff;color:#12395b;border:2px solid #12395b;border-radius:999px;padding:.45rem 1rem;font-weight:700;font-size:.85rem;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.2);z-index:30}
+</style>
+</head>
+<body>
 
-// escape user text before putting it in innerHTML (prevents HTML injection)
-function esc(s){
-  return s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
+<div class="top"><div class="wrap">
+  <span>Need help now? <b>Talian Kasih 15999</b> (24 hrs, free)</span>
+  <span id="clock"></span>
+  <span>Emergency: <b>999</b></span>
+</div></div>
 
-/* ===== 1. DATE & TIME + EVENT LOOP (setInterval) ===== */
-function updateClock(){
-  const now = new Date();                       // Date object
-  const hour = now.getHours();
-  let greeting;
-  if (hour < 12) greeting = "Good morning";     // control statement: if / else
-  else if (hour < 18) greeting = "Good afternoon";
-  else greeting = "Good evening";
-  const date = now.toLocaleDateString("en-MY", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
-  const time = now.toLocaleTimeString("en-MY");
-  // OUTPUT METHOD 1: innerHTML
-  document.getElementById("clock").innerHTML = `${greeting}. <b>${date}</b>, ${time}`;
-}
-updateClock();
-setInterval(updateClock, 1000);                 // runs every 1 second via the event loop
+<header class="nav"><div class="wrap">
+  <a class="logo" href="#top" aria-label="SafeHaven Malaysia home">
+    <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3 6 10v13c0 11 7.5 19 18 22 10.5-3 18-11 18-22V10z" fill="#12868a"/><path d="M24 14 14 22v10h6v-7h8v7h6V22z" fill="#fff"/></svg>
+    <span><strong>SafeHaven Malaysia</strong><small>SUPPORT · PROTECTION · INFORMATION</small></span>
+  </a>
+  <nav class="menu" aria-label="Main">
+    <a href="#what">What Is</a><a href="#law">Law Enforcement</a><a href="#enforcer">Enforcer</a><a href="#hotline">Hotline</a><a href="#selfcheck">Self-Check</a><a href="#contact">Contact</a>
+  </nav>
+</div></header>
 
-/* ===== 2. POP-UP DIALOG ===== */
-const dlg = document.getElementById("dlg");
-function showDialog(title, html){
-  document.getElementById("dtitle").textContent = title;
-  document.getElementById("dbody").innerHTML = html;
-  dlg.showModal();                              // opens the <dialog> as a pop-up
-}
-document.getElementById("dclose").addEventListener("click", () => dlg.close());
-dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); }); // click outside to close
+<main id="top">
+<div class="hero"><div class="wrap">
+  <div>
+    <h1>You deserve to feel safe at home.</h1>
+    <p>If someone close to you hurts, controls or frightens you, it is not your fault and help is available. This site explains your rights in Malaysia and shows you who to contact, step by step.</p>
+    <a class="btn" href="#hotline">Find help now</a> &nbsp; <a class="btn out" href="#what">Learn more</a>
+  </div>
+  <aside class="help" aria-label="Quick help numbers">
+    <h2>Quick help numbers</h2>
+    <div class="row"><span>Emergency (Police / Ambulance)</span><b>999</b></div>
+    <div class="row"><span>Talian Kasih (24 hours)</span><b>15999</b></div>
+    <div class="row"><span>WAO Hotline</span><b>03-3000 8858</b></div>
+  </aside>
+</div></div>
 
-/* ===== 3. SAFETY CHECK FORM ===== */
-document.getElementById("check").addEventListener("submit", function(e){
-  e.preventDefault();
+<div class="trust"><div class="wrap">
+  <span>✔ Free services</span><span>✔ Confidential</span><span>✔ Available 24 hours</span><span>✔ For women, men, children &amp; elders</span>
+</div></div>
 
-  // --- Event loop demo: watch the order in the console ---
-  console.log("1. synchronous code runs first");
-  Promise.resolve().then(() => console.log("3. microtask (Promise)"));
-  setTimeout(() => console.log("4. macrotask (setTimeout)"), 0);
-  console.log("2. still synchronous");
+<section id="what"><div class="wrap">
+  <h2 class="t">What Is Domestic &amp; Gender-Based Violence?</h2>
+  <p class="lead"><b>Domestic violence</b> is any behaviour used to control or hurt a spouse, ex-partner, child or family member. <b>Gender-based violence</b> is harm done to someone because of their gender, at home, at work, in public or online.</p>
+  <div class="grid">
+    <div class="card"><h3>Physical</h3><p>Hitting, slapping, choking, pushing or using a weapon.</p></div>
+    <div class="card"><h3>Emotional</h3><p>Insults, threats, isolation, constant monitoring and humiliation.</p></div>
+    <div class="card"><h3>Economic</h3><p>Controlling money, stopping you from working, taking your income.</p></div>
+    <div class="card"><h3>Sexual</h3><p>Forced sex, unwanted touching or sexual harassment.</p></div>
+    <div class="card"><h3>Digital</h3><p>Tracking your phone, stalking, sharing private images.</p></div>
+    <div class="card"><h3>Warning signs</h3><ul><li>Fear of your partner's reaction</li><li>Cut off from family and friends</li><li>Threats if you try to leave</li></ul></div>
+  </div>
+</div></section>
 
-  // --- read form values ---
-  const name = document.getElementById("cname").value.trim() || "Friend";
-  const boxes = document.querySelectorAll('#check input[name="q"]');
-  let score = 0;                                // operators: =, +=, ++
-  let count = 0;
-  const ticked = [];
+<section id="law" class="alt"><div class="wrap">
+  <h2 class="t">Law Enforcement &amp; Legal Protection</h2>
+  <p class="lead">Domestic violence is a crime in Malaysia, not a private family matter. These are the main laws that protect you.</p>
+  <div class="scroll"><table>
+    <tr><th>Law</th><th>What it does</th></tr>
+    <tr><td><b>Domestic Violence Act 1994 (Act 521)</b>, amended 2017</td><td>Protects spouses, ex-spouses, children and family members. Covers emotional abuse and provides protection orders.</td></tr>
+    <tr><td><b>Penal Code (Act 574)</b></td><td>Criminal offences such as causing hurt, rape, intimidation, outrage of modesty and stalking.</td></tr>
+    <tr><td><b>Child Act 2001 (Act 611)</b></td><td>Protects children from abuse and neglect.</td></tr>
+    <tr><td><b>Sexual Offences Against Children Act 2017</b></td><td>Child sexual crimes, grooming and child pornography.</td></tr>
+    <tr><td><b>Anti-Sexual Harassment Act 2022 (Act 840)</b></td><td>Sets up a Tribunal to hear sexual harassment complaints.</td></tr>
+    <tr><td><b>Islamic Family Law (State)</b></td><td>For Muslims: divorce and maintenance through the Syariah Court.</td></tr>
+  </table></div>
+  <h3 style="margin:1.6rem 0 .8rem;color:var(--navy)">Protection orders under Act 521</h3>
+  <div class="grid">
+    <div class="card"><h3>Interim Protection Order</h3><p>Issued by the court to protect you while a complaint is investigated.</p></div>
+    <div class="card"><h3>Emergency Protection Order</h3><p>Quick, short-term protection issued by a Social Welfare Officer.</p></div>
+    <div class="card"><h3>Protection Order</h3><p>Issued by the Magistrate's Court to stop the abuser from harming you.</p></div>
+  </div>
+  <p class="note">General information only, not legal advice. Confirm details with a lawyer, Legal Aid Department or an NGO.</p>
+</div></section>
 
-  for (const box of boxes){                     // control statement: for...of loop
-    if (box.checked){
-      score += Number(box.value);               // arithmetic operator
-      count++;
-      ticked.push(box.parentElement.textContent.trim());
-    }
-  }
+<section id="enforcer"><div class="wrap">
+  <h2 class="t">Enforcer: Who Can Help You?</h2>
+  <p class="lead">These agencies and organisations work together to protect victims and act against offenders.</p>
+  <div class="grid">
+    <div class="card"><h3>Royal Malaysia Police (PDRM)</h3><p>Takes reports, investigates and arrests offenders. Specialist unit: D11 Sexual, Women &amp; Child Investigation.</p></div>
+    <div class="card"><h3>Social Welfare Dept. (JKM)</h3><p>Issues Emergency Protection Orders and provides shelter, counselling and aid.</p></div>
+    <div class="card"><h3>Hospitals (OSCC)</h3><p>One Stop Crisis Centres in government hospitals give free treatment and counselling.</p></div>
+    <div class="card"><h3>Courts &amp; Legal Aid</h3><p>Courts issue protection orders. Legal Aid Department helps those who qualify.</p></div>
+    <div class="card"><h3>NGOs</h3><p>WAO, WCC and AWAM offer shelter, counselling and legal information.</p></div>
+    <div class="card"><h3>Ministry (KPWKM)</h3><p>Leads national policy for women, family and child protection; runs Talian Kasih.</p></div>
+  </div>
+  <h3 style="margin:2rem 0 .8rem;color:var(--navy)">What to do, step by step</h3>
+  <ol class="steps">
+    <li><b>Get to a safe place</b> such as a trusted person's home or a shelter.</li>
+    <li><b>Call for help:</b> 999 in an emergency or Talian Kasih 15999.</li>
+    <li><b>See a doctor</b> and ask for your injuries to be recorded.</li>
+    <li><b>Make a police report</b> and ask for a copy.</li>
+    <li><b>Keep evidence:</b> photos, medical reports, messages, dates.</li>
+    <li><b>Apply for a protection order</b> with JKM, an NGO or a lawyer.</li>
+  </ol>
+</div></section>
 
-  // --- decide result: switch + logical/comparison operators ---
-  let level, advice;
-  switch (true){
-    case score === 0:
-      level = "No warning signs selected";
-      advice = "Good to hear. Keep the hotline numbers saved, just in case.";
-      break;
-    case score <= 3:
-      level = "Some warning signs";
-      advice = "These can be early signs of abuse. Consider talking to someone you trust or calling Talian Kasih.";
-      break;
-    case score <= 6:
-      level = "Moderate concern";
-      advice = "Your situation may be unsafe. Please contact Talian Kasih (15999) or WAO (03-3000 8858) for advice.";
-      break;
-    default:
-      level = "High concern";
-      advice = "Your safety may be at risk. Please call Talian Kasih 15999 now, or 999 if you are in danger.";
-  }
-  const urgent = score >= 5 && count >= 3;      // logical operator &&
-  const stamp = new Date().toLocaleString("en-MY");
+<section id="hotline" class="alt"><div class="wrap">
+  <h2 class="t">Hotline</h2>
+  <p class="lead">Calls are free or low-cost and confidential. You do not need to be sure it is "serious enough". You can simply ask for advice.</p>
+  <div class="emerg"><div><b>EMERGENCY</b><br>Police / Ambulance</div><div class="big">999</div><div>(112 on mobile)</div></div>
+  <div class="grid">
+    <div class="card"><span class="tag">24 hours</span><h3>Talian Kasih (KPWKM)</h3><div class="big">15999</div><p>WhatsApp: 019-261 5999. Advice and referral for women, children and families.</p></div>
+    <div class="card"><h3>WAO Hotline</h3><div class="big">03-3000 8858</div><p>WhatsApp/SMS: 018-988 8058. Women's Aid Organisation.</p></div>
+    <div class="card"><h3>Befrienders KL</h3><div class="big">03-7627 2929</div><p>Emotional support, 24 hours, for anyone in distress.</p></div>
+  </div>
+  <p class="note">Numbers were correct at time of writing. Please verify on kpwkm.gov.my, jkm.gov.my and wao.org.my.</p>
+</div></section>
 
-  // OUTPUT METHOD 1: innerHTML
-  document.getElementById("result").innerHTML =
-    `<h3>Result for ${esc(name)}</h3>
-     <p><b>${level}</b> (score ${score}, ${count} sign${count === 1 ? "" : "s"} selected)</p>
-     <p>${advice}</p><p class="note">Checked on ${stamp}</p>`;
+<section id="selfcheck"><div class="wrap">
+  <h2 class="t">Safety Self-Check</h2>
+  <p class="lead">Tick anything that sounds familiar. This quick check runs only in your browser and nothing is saved or sent.</p>
+  <form id="check" class="card checks">
+    <div><label for="cname">Your name (optional)</label><input id="cname" autocomplete="off"></div>
+    <label><input type="checkbox" name="q" value="1"> I feel afraid of how someone close to me will react</label>
+    <label><input type="checkbox" name="q" value="1"> I am insulted, humiliated or constantly monitored</label>
+    <label><input type="checkbox" name="q" value="1"> Someone controls my money or stops me from working</label>
+    <label><input type="checkbox" name="q" value="2"> I have been hit, pushed or physically hurt</label>
+    <label><input type="checkbox" name="q" value="2"> I have been threatened or forced into sex</label>
+    <button class="btn" type="submit">Check now</button>
+  </form>
+  <div id="result" class="card" aria-live="polite">Your result will appear here.</div>
+  <iframe id="report" title="Printable summary"></iframe>
+</div></section>
 
-  // OUTPUT METHOD 2: console
-  console.log("Safety check result:", {name, score, count, level, urgent, stamp});
-  console.table(ticked.map((t, i) => ({no: i + 1, sign: t})));
+<section id="contact" class="alt"><div class="wrap">
+  <h2 class="t">Contact</h2>
+  <p class="lead">Questions about this website? Send us a message. <b>This form is not for emergencies or reporting abuse.</b> Please use the hotlines above.</p>
+  <div class="grid" style="align-items:start;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+    <form id="f" class="card">
+      <div><label for="n">Name</label><input id="n" required></div>
+      <div><label for="e">Email</label><input id="e" type="email" required></div>
+      <div><label for="m">Message</label><textarea id="m" rows="4" required></textarea></div>
+      <button class="btn" type="submit">Send message</button>
+    </form>
+    <div class="card">
+      <h3>SafeHaven Malaysia</h3>
+      <p>Email: contact@safehaven-demo.my</p>
+      <p>Course project: ITT588 – Lab Work 3</p>
+      <h3 style="margin-top:1rem">Official websites</h3>
+      <ul>
+        <li><a href="https://www.kpwkm.gov.my" target="_blank" rel="noopener">Ministry of Women, Family &amp; Community Development</a></li>
+        <li><a href="https://www.jkm.gov.my" target="_blank" rel="noopener">Social Welfare Department (JKM)</a></li>
+        <li><a href="https://wao.org.my" target="_blank" rel="noopener">Women's Aid Organisation</a></li>
+        <li><a href="https://www.rmp.gov.my" target="_blank" rel="noopener">Royal Malaysia Police</a></li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+</main>
 
-  // OUTPUT METHOD 3: document.write()  (written into the summary iframe, so the main page is not erased)
-  const d = document.getElementById("report").contentDocument;
-  d.open();
-  d.write(`<body style="font-family:Arial;padding:12px;color:#1d2b36">
-    <h3>SafeHaven summary</h3>
-    <p>Name: ${esc(name)}<br>Date: ${stamp}<br>Level: <b>${level}</b></p>
-    <ul>${ticked.map(t => `<li>${esc(t)}</li>`).join("") || "<li>None selected</li>"}</ul></body>`);
-  d.close();
+<footer><div class="wrap">
+  <p><b>Privacy tip:</b> Your device may save the sites you visit. Use the "Leave site quickly" button (or press Esc), or a private window.</p>
+  <p>© 2026 SafeHaven Malaysia · Educational project · Not a substitute for legal or medical advice.</p>
+</div></footer>
 
-  // OUTPUT METHOD 4: window.alert()  + pop-up dialog, delayed with setTimeout (event loop)
-  setTimeout(() => {
-    window.alert(`Hi ${name}, your result is ready: ${level}.`);
-    showDialog(level, `<p>${advice}</p>` +
-      (urgent ? `<p><b>Emergency: 999</b><br><b>Talian Kasih: 15999</b> (24 hours)</p>` : ""));
-  }, 300);
+<a class="leave" href="https://www.google.com.my" onclick="location.replace('https://www.google.com.my');return false;">Leave site quickly ✕</a>
+
+<dialog id="dlg" aria-labelledby="dtitle">
+  <h3 id="dtitle"></h3>
+  <div id="dbody"></div>
+  <p style="text-align:right;margin:1rem 0 0"><button class="btn" id="dclose" type="button">Close</button></p>
+</dialog>
+
+<script src="lab3.js"></script>
+<script>
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape' && !document.getElementById('dlg').open) location.replace('https://www.google.com.my');
 });
-
-/* ===== 4. CONTACT FORM: validation + pop-up ===== */
-document.getElementById("f").addEventListener("submit", function(e){
-  e.preventDefault();
-  const msg = document.getElementById("m").value;
-  const words = msg.trim().split(/\s+/).length;
-  console.log(`Contact message received (${words} words)`);
-  showDialog("Message received", "<p>Thank you! This is a demo form, so nothing is sent or stored.</p>");
-  this.reset();
-});
+</script>
+</body>
+</html>
